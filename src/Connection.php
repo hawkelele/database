@@ -26,6 +26,7 @@ class Connection
     /**
      * @param string $driver mysql|sqlite|pdo
      * @param string|null $database Name or path (if sqlite) of the database
+     * @param string|null $host Connection host
      * @param string|null $username Connection username
      * @param string|null $password Connection password
      * @param integer|null $port Connection port
@@ -35,7 +36,7 @@ class Connection
      * @throws Exception
      * @throws PDOException
      */
-    public function __construct(string $driver, ?string $database, ?string $username = null, ?string $password = null, ?int $port = null, ?string $charset = 'UTF8', ?PDO $pdo = null)
+    public function __construct(string $driver, ?string $database, ?string $host, ?string $username = null, ?string $password = null, ?int $port = null, ?string $charset = 'UTF8', ?PDO $pdo = null)
     {
         switch ($driver) {
             case 'pdo':
@@ -54,6 +55,7 @@ class Connection
             case 'mysql':
                 $config = [
                     'driver' => 'pdo_mysql',
+                    'host' => $host,
                     'user' => $username,
                     'password' => $password,
                     'dbname' => $database,
@@ -80,22 +82,26 @@ class Connection
      */
     public static function createFromPDOInstance(PDO $pdo)
     {
-        return new Connection('pdo', null, null, null, null, null, $pdo);
+        return new Connection('pdo', null, null, null, null, null, null, $pdo);
     }
 
     /**
      * Executes a query, returns its result, based on the guessed statement type
      *
      * @param string $statement The statement to be executed
-     * @param array $parameters An array of parameters to bind to the statement
+     * @param array|mixed $parameters An array of parameters, or a single parameter, to bind to the statement
      * @return array|int Depending on the query, for select statements: 
      *                   - SELECT: an array of results
      *                   - INSERT: the id of the last inserted record as int
      *                   - UPDATE, DELETE, OTHERS: the number of affected records as int
      * @throws PDOException
      */
-    public function query(string $statement, ?array $parameters = [])
+    public function query(string $statement, $parameters = [])
     {
+        if (!is_array($parameters)) {
+            $parameters = [$parameters];
+        }
+
         $type = $this->getStatementType($statement);
 
         try {
