@@ -14,7 +14,7 @@ Add this library to your project by adding the following keys inside your compos
     { "type": "vcs", "url": "https://github.com/hawkelele/database" }
 ],
 "require": {
-    "hawkelele/database": "^1.0.0"
+    "hawkelele/database": "dev-main"
 }
 ```
 Then run ```composer install```
