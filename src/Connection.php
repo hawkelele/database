@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hawkelele\Database;
 
 use Doctrine\DBAL\DriverManager;
@@ -161,7 +163,7 @@ class Connection
      */
     public function getPdo()
     {
-        return $this->getConnection()->getWrappedConnection();
+        return $this->getConnection()->getNativeConnection();
     }
 
     /**
@@ -171,7 +173,7 @@ class Connection
      */
     public function getDatabases()
     {
-        $schema = $this->getConnection()->getSchemaManager();
+        $schema = $this->getConnection()->createSchemaManager();
         return $schema->listDatabases();
     }
 
@@ -182,7 +184,7 @@ class Connection
      */
     public function getViews()
     {
-        $schema = $this->getConnection()->getSchemaManager();
+        $schema = $this->getConnection()->createSchemaManager();
         return $schema->listViews();
     }
 }

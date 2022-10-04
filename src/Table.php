@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hawkelele\Database;
 
 use Exception;
